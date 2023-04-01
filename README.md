@@ -393,3 +393,36 @@ uname -a
 Linux ubuntu-MS-7C81 5.4.0-144-generic #161~18.04.1-Ubuntu SMP Fri Feb 10 15:55:22 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
 </pre>
 
+Fine! When I run `pip install pillow==9.4.0` after the comparison between two machines. An error says no version 9.4.0 occured. 
+
+But, I find the command `pip install pillow==9.4.0 -i https://pypi.tuna.tsinghua.edu.cn/simple` can resolve this problem. May since the different resources have different package versions. The Qinghua Resource is the the pip resource of the my PC, and the Huawei Resource is the pip resource of AutoDL.com.
+
+Ok, fine again! New pillow version still have the same error. 
+
+<pre>
+  File "/root/miniconda3/envs/asd/lib/python3.9/site-packages/torchvision/datasets/__init__.py", line 9, in <module>
+    from .fakedata import FakeData
+  File "/root/miniconda3/envs/asd/lib/python3.9/site-packages/torchvision/datasets/fakedata.py", line 3, in <module>
+    from .. import transforms
+  File "/root/miniconda3/envs/asd/lib/python3.9/site-packages/torchvision/transforms/__init__.py", line 1, in <module>
+    from .transforms import *
+  File "/root/miniconda3/envs/asd/lib/python3.9/site-packages/torchvision/transforms/transforms.py", line 17, in <module>
+    from . import functional as F
+  File "/root/miniconda3/envs/asd/lib/python3.9/site-packages/torchvision/transforms/functional.py", line 5, in <module>
+    from PIL import Image, ImageOps, ImageEnhance, PILLOW_VERSION
+ImportError: cannot import name 'PILLOW_VERSION' from 'PIL' (/root/miniconda3/envs/asd/lib/python3.9/site-packages/PIL/__init__.py)
+</pre>
+
+Finally, I find this behaviour is written in the torchvision and the trouble machine has a bad version of torchvision which is too low as 0.2.2.post3.
+
+The origin of error is `/root/miniconda3/envs/asd/lib/python3.9/site-packages/torchvision/transforms/functional.py`.
+
+So, run 
+
+`pip install torchvision==0.14.1 --extra-index-url https://download.pytorch.org/whl/cu116` 
+
+to resolve it. 
+
+Since the cuda version is fixed on the docker of AutoDL.com, we must make the versions of the torch and torchvision be the same version. Additionally, the pytorch can only be installed when the GPU is existed, or the installing process will be killed by the AutoDL.com platform. So, turn off the machine which is the mode of no GPU, turn on it and run the installing command when the GPU resources is not zero.  
+
+`pip install torchvision==0.14.1 torch==1.13 --extra-index-url https://download.pytorch.org/whl/cu116`
