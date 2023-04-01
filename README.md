@@ -163,4 +163,8 @@ hf_hub_download(repo_id="lysandre/arxiv-nlp", filename="config.json")
 hf_hub_download(repo_id="google/fleurs", filename="fleurs.py", repo_type="dataset")
 </pre>
 
+Finally, you may find the param `filename` is not neccessary for `hf_hub_download` in [this blog](https://blog.csdn.net/YI_SHU_JIA/article/details/127490591).
 
+In fact, in my experiment, this argument is required, may be the reason of different version of `huggingface_hub`.
+
+So, we can find the source code is wrong after analyzing the arguments passing between `attack_with_aspl.sh` and `aspl.py: main`. Why is `pretrained_model_name_or_path`, will be the param `model_id`, written as `./stable-diffusion/stable-diffusion-2-1-base`? It should be `stabilityai/stable-diffusion-2-1-base` possibly! It must be `stabilityai/stable-diffusion-2-1-base`! After my revision, the part of downloading works!
