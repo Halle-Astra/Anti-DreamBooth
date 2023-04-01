@@ -64,3 +64,103 @@ For reading without the problem with relative paths, my folder structure is atta
 	4. `mv v2-1_ema-pruned.ckpt stable-diffusion/stable-diffusion-2-1-base.ckpt`
 
 2. 
+
+
+## Notes when I learning 
+
+### the way to get stable-diffusion config and source code needed
+
+We can know the way to get it from its [example](https://huggingface.co/stabilityai/stable-diffusion-2-1-base#examples).
+
+`model_id = "stabilityai/stable-diffusion-2-1-base"` in its example. 
+
+And the implementation of `diffusers.<MODEL>.from_pretrained` is 
+
+<pre> 
+aspl.py 
+line:614 
+func:main
+
+pipeline = DiffusionPipeline.from_pretrained(
+                args.pretrained_model_name_or_path,
+                torch_dtype=torch_dtype,
+                safety_checker=None,
+                revision=args.revision,
+            )
+
+</pre>
+
+---------------------->
+
+<pre>
+diffusers/pipelines/pipeline_utils.py 
+line:617 
+func:DiffusionPipeline.from_pretrained
+
+# download all allow_patterns
+            cached_folder = snapshot_download(
+                pretrained_model_name_or_path,
+                cache_dir=cache_dir,
+                resume_download=resume_download,
+                proxies=proxies,
+                local_files_only=local_files_only,
+                use_auth_token=use_auth_token,
+                revision=revision,
+                allow_patterns=allow_patterns,
+                ignore_patterns=ignore_patterns,
+                user_agent=user_agent,
+            )
+
+</pre>
+
+------------------------->
+
+The default params are what I want to show for you.
+
+<pre> 
+huggingface_hub/_snapshot_downlaod.py 
+line:24
+func:snapshot_download
+
+
+@validate_hf_hub_args
+def snapshot_download(
+    repo_id: str,
+    *,
+    revision: Optional[str] = None,
+    repo_type: Optional[str] = None,
+    cache_dir: Union[str, Path, None] = None,
+    local_dir: Union[str, Path, None] = None,
+
+</pre>
+
+Tips: Func as below is a son func of `snapshot_download`, so the codes written 
+after `_inner_hf_hub_download` will be executed by `snapshot_download`, too. So, some params like `repo_id, repo_type, commit_hash` is copied from `snapshot_download`, though these params are not be passed by `_inner_hf_hub_download` explicitly.
+
+<pre>
+huggingface_hub/_snapshot_download.py
+line:211 
+func:snapshot_download/_inner_hf_hub_download
+
+
+    def _inner_hf_hub_download(repo_file: str):
+        return hf_hub_download(
+            repo_id,
+            filename=repo_file,
+            repo_type=repo_type,
+            revision=commit_hash,
+            cache_dir=cache_dir,
+            local_dir=local_dir,
+
+</pre>
+
+Also, let we see the example of this api on the [hugging face tutorial](https://huggingface.co/docs/huggingface_hub/v0.13.3/guides/download) as following.
+
+<pre>
+from huggingface_hub import hf_hub_download
+hf_hub_download(repo_id="lysandre/arxiv-nlp", filename="config.json")
+
+hf_hub_download(repo_id="google/fleurs", filename="fleurs.py", repo_type="dataset")
+</pre>
+
+
