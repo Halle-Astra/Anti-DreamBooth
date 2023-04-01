@@ -2,7 +2,7 @@
 
 This is the program revised by me. 
 
-Especially to adapt the [original project](README.me.orig) for autodl.com . ('Cause the triton package cannot be installed on the Windows platform [described by the triton project]).
+Especially to adapt the [original project](README.md.orig) for autodl.com . ('Cause the triton package cannot be installed on the Windows platform [described by the triton project]).
 
 So, I will put the file revised here (such as, the requirements[2023, 3, 31]).
 
