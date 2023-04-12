@@ -35,8 +35,7 @@ accelerate launch attacks/aspl.py \
   --learning_rate=5e-7 \
   --pgd_alpha=5e-3 \
   --pgd_eps=$ETA \
-  --enable_xformers_memory_efficient_attention \
-  --mixed_precision=bf16
+  --enable_xformers_memory_efficient_attention
 
 #  --resolution=512 \
 #  --num_class_images=200 \
